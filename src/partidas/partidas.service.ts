@@ -49,7 +49,7 @@ export class PartidasService {
 
 
       return await lastValueFrom(
-        this.clientDesafios.emit(
+        this.clientRanking.emit(
           'processar-partida', 
           { 
             idPartida , 

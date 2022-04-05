@@ -18,6 +18,7 @@ export class DesafiosController {
   async criarDesafio(@Payload() desafio: Desafio, @Ctx() context: RmqContext) {
     const originalMsg = context.getMessage();
     const channel = context.getChannelRef();
+    console.log('executando')
     try {
       this.logger.log(`desafio: ${JSON.stringify(desafio)}`);
       await this.desafiosService.criarDesafio(desafio);

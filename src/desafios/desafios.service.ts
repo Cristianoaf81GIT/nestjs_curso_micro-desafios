@@ -19,7 +19,7 @@ export class DesafiosService {
       desafioCriado.dataHoraDesafio = new Date();
       desafioCriado.status = DesafioStatus.PENDENTE;
       this.logger.log(`desafioCriado: ${JSON.stringify(desafioCriado)}`);
-      return (await desafioCriado.save());
+      return await desafioCriado.save();
     } catch (error) {
       this.logger.error(`error: ${JSON.stringify(error.message)}`);
       throw new RpcException(error.message);

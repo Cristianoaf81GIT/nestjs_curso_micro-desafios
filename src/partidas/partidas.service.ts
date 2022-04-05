@@ -38,7 +38,7 @@ export class PartidasService {
           }
         )
       );
-    
+     this.logger.verbose(`desafio_teste ${JSON.stringify(desafio)}`)
       await lastValueFrom(
         this.clientDesafios.emit(
         'atualizar-partida', {

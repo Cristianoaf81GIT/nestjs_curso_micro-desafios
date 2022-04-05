@@ -22,6 +22,7 @@ export class ClientProxySmartRanking {
       options: {
         urls: [`${this.configService.get<string>('SERVER_URL_LOCAL')}`],
         queue: this.configService.get<string>('CHALLENGES_QUEUE_NAME'),
+        port:  Number(this.configService.get<string>('APP_PORT'))  
       },
     });
   }

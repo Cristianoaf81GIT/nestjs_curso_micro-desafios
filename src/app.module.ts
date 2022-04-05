@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseDatabaseConfig } from './config/database/mongoose.config';
 import { DesafiosModule } from './desafios/desafios.module';
 import { PartidasModule } from './partidas/partidas.module';
@@ -19,7 +17,7 @@ import { ProxyrmqModule } from './proxyrmq/proxyrmq.module';
     DesafiosModule,
     PartidasModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

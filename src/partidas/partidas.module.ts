@@ -4,15 +4,17 @@ import { PartidasController } from './partidas.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PartidaSchema } from './interfaces/partida.schema';
 import { ProxyrmqModule } from '../proxyrmq/proxyrmq.module'; 
+import { DesafioSchema } from '../desafios/interfaces/desafio.schema'; 
 
 
 
 @Module({
   imports: [
     MongooseModule.forFeatureAsync([
-      { name: 'Partida', useFactory: () => PartidaSchema}
+      { name: 'Partida', useFactory: () => PartidaSchema},
+      {name: 'Desafio', useFactory: () => DesafioSchema}
     ]),
-    ProxyrmqModule
+    ProxyrmqModule,    
   ],
   providers: [PartidasService],
   controllers: [PartidasController],

@@ -2,9 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { format } from 'date-fns-tz';
+import ptBR from 'date-fns/locale/pt-BR';
 import { DesafioStatus } from './desafio-status.enum';
 import { Desafio } from './interfaces/desafio.interface';
-import * as momentTimezone from 'moment-timezone';
+import { parseISO } from 'date-fns';
 
 @Injectable()
 export class DesafiosService {
@@ -71,9 +73,11 @@ export class DesafiosService {
 
    async consultarDesafiosRealizadosPelaData(idCategoria: string, dataRef: string): Promise<Desafio[]> {
      try {
-       const dataRefNew = `${dataRef} 23:59:59:999`;
-       const date =  momentTimezone(dataRefNew).tz('UTC')
-       .format('YYYY-MM-DD HH:mm:ss.SSS+00:00')
+       const dataRefNew = parseISO(`${dataRef}T23:59:59.999`);      
+       const date =  format(dataRefNew,'yyyy-MM-dd HH:mm:ss.SSS', {
+        timeZone: 'America/Sao_Paulo',
+        locale: ptBR,
+      });     
        return (await this.desafioModel
           .find()
           .where('categoria')
@@ -81,7 +85,7 @@ export class DesafiosService {
           .where('status')
           .equals(DesafioStatus.REALIZADO)
           .where('dataHoraDesafio')
-          .lte(new Date(date).getTime())
+          .lte(new Date(date).getTime()) 
           .exec()
         );
      } catch (error) {
@@ -103,10 +107,12 @@ export class DesafiosService {
    async atualizarDesafioPartida(idPartida: string, desafio: Desafio): Promise<void> {
      try {
        desafio.status = DesafioStatus.REALIZADO;
-       desafio.partida = idPartida;
-       await this.desafioModel.findOneAndUpdate({_id: desafio._id}, {$set: desafio}).exec();
+       desafio.partida = idPartida;       
+      await this.desafioModel.findOneAndUpdate({_id: desafio._id}, { $set: desafio}).exec();      
      } catch (error) {
-       this.logger.error(`error: ${JSON.stringify(error.message)}`);
+       console.log(error, 'erro')
+       this.logger.error(`error_aqui: ${JSON.stringify(error.message)}`);
+   
        throw new RpcException(error.message);
      }
    }

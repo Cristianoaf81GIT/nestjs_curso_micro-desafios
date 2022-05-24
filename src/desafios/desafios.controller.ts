@@ -18,11 +18,10 @@ export class DesafiosController {
   async criarDesafio(@Payload() desafio: Desafio, @Ctx() context: RmqContext) {
     const originalMsg = context.getMessage();
     const channel = context.getChannelRef();
-    console.log('executando')
     try {
       this.logger.log(`desafio: ${JSON.stringify(desafio)}`);
       await this.desafiosService.criarDesafio(desafio);
-      await channel.ack(originalMsg);
+      return await channel.ack(originalMsg);
     } catch (error) {
       this.logger.error(`error: ${JSON.stringify(error.message)}`);
       const filterAckError = ackErrors
@@ -99,7 +98,7 @@ export class DesafiosController {
 
       try {
         this.logger.log(`data: ${JSON.stringify(data)}`);
-        const idPartida: string = data.desafion;
+        const idPartida: string = data.desafio;
         const desafio: Desafio = data.desafio;
         await this.desafiosService.atualizarDesafioPartida(idPartida, desafio);
         await channel.ack(originalMsg);
@@ -129,5 +128,7 @@ export class DesafiosController {
       }
     }
   }
+
+ 
 
 }

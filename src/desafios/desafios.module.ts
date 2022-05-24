@@ -10,10 +10,10 @@ import { ProxyrmqModule } from '../proxyrmq/proxyrmq.module';
   imports: [
     MongooseModule.forFeatureAsync([
       {name: 'Desafio', useFactory: () => DesafioSchema}
-    ]),
+    ]),  
     ProxyrmqModule
   ],
   providers: [DesafiosService],
-  controllers: [DesafiosController],
+  controllers: [DesafiosController], 
 })
 export class DesafiosModule {}

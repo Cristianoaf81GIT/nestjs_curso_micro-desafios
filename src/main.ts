@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-// import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 import { format } from 'date-fns-tz';
 import ptBR from 'date-fns/locale/pt-BR';
@@ -31,6 +30,7 @@ async function bootstrap() {
       return this;
     }
   };
+  
   
   logger.log('Microservice is listening')
   await app.startAllMicroservices();

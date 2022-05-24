@@ -9,14 +9,14 @@ import { PartidasService } from './partidas.service';
 
 const ackErrors: string[] = ['E11000'];
 
-@Controller('partidas')
+@Controller()
 export class PartidasController {
   private readonly logger = new Logger(PartidasController.name);
   constructor(private readonly partidaService: PartidasService) {}
 
   @EventPattern('criar-partida')
   async criarPartida(
-    @Payload() partida: Partida, 
+    @Payload() partida: Partida | any, 
     @Ctx() context: RmqContext
   ) {
     const channel = context.getChannelRef();

@@ -3,6 +3,7 @@ import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { lastValueFrom } from 'rxjs';
+import { DesafioStatus } from 'src/desafios/desafio-status.enum';
 import { Desafio } from '../desafios/interfaces/desafio.interface';
 import { ClientProxySmartRanking } from '../proxyrmq/proxyrmq.service'; 
 import { Partida } from './interfaces/partida.interface';
@@ -14,8 +15,9 @@ export class PartidasService {
   private readonly logger = new Logger(PartidasService.name);
   
   constructor(
-    @InjectModel('Partida') private readonly partidaModel: Model<Partida>, 
-    private clientProxySmartRanking: ClientProxySmartRanking
+    @InjectModel('Partida') private readonly partidaModel: Model<Partida>,
+    @InjectModel('Desafio') private readonly desafioModel: Model<Desafio> ,
+    private clientProxySmartRanking: ClientProxySmartRanking,    
   ) {}
 
   private clientDesafios = this.clientProxySmartRanking.getClientDesafiosInstance();
@@ -29,6 +31,7 @@ export class PartidasService {
       const result = await partidaCriada.save();
       this.logger.log(`result: ${JSON.stringify(result)}`);
       const idPartida = result._id;
+      
       const desafio: Desafio = await lastValueFrom(
         this.clientDesafios.send(
           'consultar-desafios', 
@@ -38,25 +41,32 @@ export class PartidasService {
           }
         )
       );
-     this.logger.verbose(`desafio_teste ${JSON.stringify(desafio)}`)
-      await lastValueFrom(
+      
+      this.logger.log(`desafio encontrado: ${JSON.stringify(desafio)}`);
+      /**
+       * Original Code
+       * await lastValueFrom(
         this.clientDesafios.emit(
-        'atualizar-partida', {
-          idPartida,
+        'atualizar-desafio-partida', { 
+          idPartida,         
           desafio,
         }
       ));
-
-
+       * 
+       *  */ 
+      // alternative
+      await this.atualizarDesafioPartida(idPartida, desafio);
+      
       return await lastValueFrom(
         this.clientRanking.emit(
           'processar-partida', 
           { 
-            idPartida , 
-            partida
+            idPartida: idPartida , 
+            partida: partida
           }
         )
-      );
+      );    
+     
 
     } catch (error) {
       this.logger.error(`error: ${JSON.stringify(error.message)}`);
@@ -64,5 +74,14 @@ export class PartidasService {
     }
   }
 
+  async atualizarDesafioPartida(idPartida: string, desafio: Desafio): Promise<void> {
+    try {
+      desafio.status = DesafioStatus.REALIZADO;
+      desafio.partida = idPartida;       
+     await this.desafioModel.findOneAndUpdate({_id: desafio._id}, { $set: desafio}).exec();      
+    } catch (error) {
+      this.logger.error(`error: ${JSON.stringify(error.message)}`);        
+    }
+  }
 
 }

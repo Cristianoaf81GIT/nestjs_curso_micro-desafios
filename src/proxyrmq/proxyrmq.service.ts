@@ -8,7 +8,7 @@ export class ClientProxySmartRanking {
 
   getClientProxyAdminBackendInstance(): ClientProxy {
     return ClientProxyFactory.create({
-      transport: this.configService.get<number>('TRANSPORT_LOCAL'),
+      transport: +this.configService.get<string>('TRANSPORT_LOCAL'),
       options: {
         urls: [`${this.configService.get<string>('SERVER_URL_LOCAL')}`],
         queue: this.configService.get<string>('QUEUE_NAME'),
@@ -18,24 +18,22 @@ export class ClientProxySmartRanking {
 
   getClientDesafiosInstance(): ClientProxy {
     return ClientProxyFactory.create({
-      transport: this.configService.get<number>('TRANSPORT_LOCAL'),
+      transport: +this.configService.get<string>('TRANSPORT_LOCAL'),// Transport.RMQ,
       options: {
         urls: [`${this.configService.get<string>('SERVER_URL_LOCAL')}`],
-        queue: this.configService.get<string>('CHALLENGES_QUEUE_NAME'),
-        port:  Number(this.configService.get<string>('APP_PORT'))  
+        queue: this.configService.get<string>('CHALLENGES_QUEUE_NAME'),             
       },
     });
   }
 
   getClientProxyRankingsInstance(): ClientProxy {
     return ClientProxyFactory.create({
-      transport: this.configService.get<number>('TRANSPORT_LOCAL'),
+      transport: +this.configService.get<string>('TRANSPORT_LOCAL'),// Transport.RMQ,
       options: {
         urls: [`${this.configService.get<string>('SERVER_URL_LOCAL')}`],
-        queue: this.configService.get<string>('RANKINGS_QUEUE_NAME'),
+        queue: this.configService.get<string>('RANKINGS_QUEUE_NAME'),       
       },
     });
   }
-
 
 }

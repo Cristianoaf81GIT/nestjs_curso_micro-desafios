@@ -2,7 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
-import { format } from 'date-fns-tz';
+import { format } from 'date-fns-tz';  
+import { parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 
 
@@ -22,7 +23,7 @@ async function bootstrap() {
 
   Date.prototype.toJSON = (): string => {
     try {
-      return format(this, 'yyyy-MM-dd HH:mm:ss.SS', {
+      return format(parseISO(this), 'yyyy-MM-dd HH:mm:ss.SS', {
         timeZone: 'America/Sao_Paulo',
         locale: ptBR,
       });

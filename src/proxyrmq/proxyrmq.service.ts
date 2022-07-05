@@ -36,4 +36,14 @@ export class ClientProxySmartRanking {
     });
   }
 
+  getClientProxyNotificacoesInstance(): ClientProxy {
+    return ClientProxyFactory.create({
+      transport: + this.configService.get<string>('TRANSPORT_LOCAL'),
+      options: {
+        urls: [`${this.configService.get<string>('SERVER_URL_LOCAL')}`],
+        queue: this.configService.get<string>('NOTIFICATIONS_QUEUE')
+      }
+    });
+  }
+
 }
